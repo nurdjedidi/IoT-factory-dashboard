@@ -1,8 +1,8 @@
-# 🏭 IoT Factory Dashboard — Vue Industrielle Temps-Réel
+# IoT Factory Dashboard — Vue Industrielle Temps-Réel
 
 Un dashboard moderne et performant conçu pour le monitoring industriel, offrant une visualisation interactive des capteurs répartis sur plusieurs étages d'une usine.
 
-![Aperçu du Dashboard](https://github.com/nurdjedidi/IoT-factory-dashboard/raw/main/public/preview.png) *(Ajouter un screenshot ici si possible)*
+![Aperçu du Dashboard](https://github.com/nurdjedidi/IoT-factory-dashboard/raw/main/public/preview.png)
 
 ## ✨ Fonctionnalités Clés
 
