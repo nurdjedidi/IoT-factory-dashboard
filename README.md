@@ -54,4 +54,4 @@ Un dashboard moderne et performant conçu pour le monitoring industriel, offrant
 
 ---
 
-*Projet développé par [Nur](https://github.com/nurdjedidi).*
+*Projet développé par [Nûr](https://github.com/nurdjedidi).*
