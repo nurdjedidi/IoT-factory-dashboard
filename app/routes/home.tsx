@@ -18,6 +18,7 @@ import {
   Cell,
   Pie,
   PieChart,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis, YAxis,
@@ -183,6 +184,7 @@ export default function Home() {
                 axisLine={false}
                 tickLine={false}
                 width={40}
+                domain={["auto", "auto"]}
               />
               <XAxis hide />
               <Tooltip
@@ -193,7 +195,9 @@ export default function Home() {
                   fontSize: "12px",
                   color: "var(--color-text-primary)",
                 }}
+                formatter={(value: number | string | undefined) => (value !== undefined ? [`${value}°C`, "Température"] : ["", ""])}
               />
+              <ReferenceLine y={0} stroke="var(--color-surface-500)" strokeDasharray="3 3" opacity={0.5} />
               {floors.map((f, i) => (
                 <Area
                   key={f.id}
@@ -204,6 +208,8 @@ export default function Home() {
                   fill={`url(#temp-${f.id})`}
                   dot={false}
                   activeDot={{ r: 3, strokeWidth: 0 }}
+                  isAnimationActive={true}
+                  animationDuration={1500}
                 />
               ))}
             </AreaChart>
