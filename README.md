@@ -54,5 +54,6 @@ Un dashboard moderne et performant conçu pour le monitoring industriel, offrant
 
 ---
 
-* Démo disponible [ici](https://iot-factory-dashboard-production.up.railway.app/).
-* Projet développé par [Nûr](https://github.com/nurdjedidi).*
+*Démo disponible [ici](https://iot-factory-dashboard-production.up.railway.app/).*
+
+*Projet développé par [Nûr](https://github.com/nurdjedidi).*
