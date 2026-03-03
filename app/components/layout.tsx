@@ -33,14 +33,12 @@ export function DashboardLayout({ alertCount = 0 }: LayoutProps) {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[var(--color-surface-900)]">
-      {/* Sidebar - Desktop */}
       <aside className="hidden lg:flex flex-col w-64 bg-[var(--color-surface-800)]
         border-r border-[var(--color-surface-500)]/20 shrink-0">
         <SidebarContent alertCount={alertCount} />
       </aside>
 
       <div className="flex flex-col flex-1 min-w-0">
-        {/* Header - Mobile */}
         <header className="lg:hidden flex items-center justify-between p-4
           bg-[var(--color-surface-800)] border-b border-[var(--color-surface-500)]/20 z-30">
           <div className="flex items-center gap-3">
@@ -60,16 +58,13 @@ export function DashboardLayout({ alertCount = 0 }: LayoutProps) {
           </button>
         </header>
 
-        {/* Mobile Sidebar / Drawer */}
         {isMobileMenuOpen && (
           <div className="fixed inset-0 z-50 lg:hidden">
-            {/* Backdrop */}
             <div
               className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity animate-fade-in"
               onClick={() => setIsMobileMenuOpen(false)}
             />
 
-            {/* Content */}
             <aside className="absolute top-0 left-0 bottom-0 w-[280px] bg-[var(--color-surface-800)]
               shadow-2xl flex flex-col animate-slide-in-left border-r border-[var(--color-surface-500)]/20">
               <div className="flex items-center justify-between p-5 border-b border-[var(--color-surface-500)]/20">
@@ -194,7 +189,7 @@ function SidebarContent({
       <div className="hidden lg:block p-6 border-t border-[var(--color-surface-500)]/20">
         <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--color-surface-700)]/30 border border-[var(--color-surface-500)]/10">
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium truncate">Simulateur v1.4</p>
+            <p className="text-xs font-medium truncate">Simulateur v1</p>
             <p className="text-[10px] text-emerald-400 flex items-center gap-1 mt-0.5">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
               Connecté
