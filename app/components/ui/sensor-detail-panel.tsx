@@ -34,7 +34,7 @@ export function SensorDetailPanel({ sensor, onClose }: SensorDetailPanelProps) {
   const chartData = sensor.history.map((v, i) => ({ index: i, value: v }));
 
   return (
-    <div className="animate-slide-in fixed top-0 right-0 h-full w-[420px] max-w-full z-50
+    <div className="animate-slide-in fixed top-0 right-0 h-full w-full sm:w-[420px] z-50
       bg-[var(--color-surface-800)]/95 backdrop-blur-xl border-l border-[var(--color-surface-500)]/30
       shadow-2xl shadow-black/50 flex flex-col">
 
