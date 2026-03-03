@@ -62,18 +62,18 @@ export default function FloorDetail() {
 
   return (
     <div className="space-y-6 max-w-[1400px] mx-auto">
-      <div className="flex items-center gap-4">
-        <Link
-          to="/"
-          className="h-9 w-9 rounded-xl flex items-center justify-center
-            bg-[var(--color-surface-700)] border border-[var(--color-surface-500)]/20
-            hover:bg-[var(--color-surface-600)] transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4 text-[var(--color-text-muted)]" />
-        </Link>
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+        <div className="flex items-center gap-4">
+          <Link
+            to="/"
+            className="h-9 w-9 rounded-xl flex items-center justify-center
+              bg-[var(--color-surface-700)] border border-[var(--color-surface-500)]/20
+              hover:bg-[var(--color-surface-600)] transition-colors shrink-0"
+          >
+            <ArrowLeft className="h-4 w-4 text-[var(--color-text-muted)]" />
+          </Link>
           <div
-            className="h-10 w-10 rounded-xl flex items-center justify-center"
+            className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
             style={{
               backgroundColor: `color-mix(in srgb, ${floor.color} 12%, transparent)`,
               color: floor.color,
@@ -81,10 +81,10 @@ export default function FloorDetail() {
           >
             <FloorIcon className="h-5 w-5" />
           </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">{floor.name}</h1>
-            <p className="text-sm text-[var(--color-text-muted)]">{floor.description}</p>
-          </div>
+        </div>
+        <div className="min-w-0">
+          <h1 className="text-xl md:text-2xl font-bold tracking-tight">{floor.name}</h1>
+          <p className="text-xs md:text-sm text-[var(--color-text-muted)] mt-0.5 leading-relaxed">{floor.description}</p>
         </div>
       </div>
 

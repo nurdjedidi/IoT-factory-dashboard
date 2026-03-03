@@ -78,12 +78,12 @@ export default function Home() {
 
   return (
     <div className="space-y-6 max-w-[1400px] mx-auto">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Vue d'ensemble</h1>
-        <p className="text-sm text-[var(--color-text-muted)] mt-1">Monitoring temps réel de l'usine</p>
+      <div className="flex flex-col gap-1">
+        <h1 className="text-xl md:text-2xl font-bold tracking-tight">Vue d'ensemble</h1>
+        <p className="text-xs md:text-sm text-[var(--color-text-muted)]">Monitoring temps réel de l'usine</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <KpiCard
           label="Capteurs actifs"
           value={allSensors.length}
@@ -114,7 +114,7 @@ export default function Home() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {floors.map((floor, i) => {
           const FloorIcon = floorIcons[floor.iconName];
           const fOk = floor.sensors.filter((s) => s.status === "ok").length;
@@ -125,7 +125,7 @@ export default function Home() {
             <Link
               key={floor.id}
               to={`/floor/${floor.id}`}
-              className="animate-fade-in-up group rounded-2xl p-5
+              className="animate-fade-in-up group rounded-2xl p-4 md:p-5
                 bg-gradient-to-br from-[var(--color-surface-700)] to-[var(--color-surface-800)]
                 border border-[var(--color-surface-500)]/20
                 hover:border-[var(--color-surface-500)]/40 transition-all duration-300
@@ -144,17 +144,17 @@ export default function Home() {
                     <FloorIcon className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-semibold group-hover:text-[var(--color-accent-cyan)] transition-colors">{floor.name}</h3>
-                    <p className="text-xs text-[var(--color-text-muted)]">{floor.sensors.length} capteurs</p>
+                    <h3 className="font-semibold group-hover:text-[var(--color-accent-cyan)] transition-colors text-sm md:text-base">{floor.name}</h3>
+                    <p className="text-[10px] md:text-xs text-[var(--color-text-muted)]">{floor.sensors.length} capteurs</p>
                   </div>
                 </div>
                 <ArrowRight className="h-4 w-4 text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
               </div>
-              <p className="text-xs text-[var(--color-text-secondary)] mb-4 line-clamp-2">{floor.description}</p>
-              <div className="flex gap-4 text-xs">
-                <span className="flex items-center gap-1.5"><StatusIndicator status="ok" size="sm" /> {fOk} OK</span>
-                <span className="flex items-center gap-1.5"><StatusIndicator status="warning" size="sm" /> {fWarn}</span>
-                <span className="flex items-center gap-1.5"><StatusIndicator status="critical" size="sm" /> {fCrit}</span>
+              <p className="text-xs text-[var(--color-text-secondary)] mb-4 line-clamp-2 leading-relaxed">{floor.description}</p>
+              <div className="flex gap-4 text-[10px] md:text-xs">
+                <span className="flex items-center gap-1.5 font-medium"><StatusIndicator status="ok" size="sm" /> {fOk} OK</span>
+                <span className="flex items-center gap-1.5 font-medium"><StatusIndicator status="warning" size="sm" /> {fWarn}</span>
+                <span className="flex items-center gap-1.5 font-medium"><StatusIndicator status="critical" size="sm" /> {fCrit}</span>
               </div>
             </Link>
           );
@@ -163,60 +163,62 @@ export default function Home() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
-        <div className="lg:col-span-7 rounded-2xl p-5 bg-gradient-to-br from-[var(--color-surface-700)] to-[var(--color-surface-800)] border border-[var(--color-surface-500)]/20 animate-fade-in-up" style={{ animationDelay: "600ms" }}>
+        <div className="lg:col-span-7 rounded-2xl p-4 md:p-5 bg-gradient-to-br from-[var(--color-surface-700)] to-[var(--color-surface-800)] border border-[var(--color-surface-500)]/20 animate-fade-in-up" style={{ animationDelay: "600ms" }}>
           <div className="flex items-center gap-2 mb-4">
             <Thermometer className="h-4 w-4 text-[var(--color-text-muted)]" />
             <h3 className="text-sm font-medium text-[var(--color-text-secondary)]">Températures moyennes</h3>
           </div>
-          <ResponsiveContainer width="100%" height={220}>
-            <AreaChart data={tempHistoryData}>
-              <defs>
-                {floors.map((f, i) => (
-                  <linearGradient key={f.id} id={`temp-${f.id}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={chartColors[i]} stopOpacity={0.2} />
-                    <stop offset="100%" stopColor={chartColors[i]} stopOpacity={0} />
-                  </linearGradient>
-                ))}
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-surface-500)" strokeOpacity={0.2} />
-              <YAxis
-                tick={{ fill: "var(--color-text-muted)", fontSize: 11 }}
-                axisLine={false}
-                tickLine={false}
-                width={40}
-                domain={["auto", "auto"]}
-              />
-              <XAxis hide />
-              <Tooltip
-                contentStyle={{
-                  background: "var(--color-surface-800)",
-                  border: "1px solid var(--color-surface-500)",
-                  borderRadius: "10px",
-                  fontSize: "12px",
-                  color: "var(--color-text-primary)",
-                }}
-                formatter={(value: number | string | undefined) => (value !== undefined ? [`${value}°C`, "Température"] : ["", ""])}
-              />
-              <ReferenceLine y={0} stroke="var(--color-surface-500)" strokeDasharray="3 3" opacity={0.5} />
-              {floors.map((f, i) => (
-                <Area
-                  key={f.id}
-                  type="monotone"
-                  dataKey={f.name}
-                  stroke={chartColors[i]}
-                  strokeWidth={2}
-                  fill={`url(#temp-${f.id})`}
-                  dot={false}
-                  activeDot={{ r: 3, strokeWidth: 0 }}
-                  isAnimationActive={true}
-                  animationDuration={1500}
+          <div className="h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={tempHistoryData}>
+                <defs>
+                  {floors.map((f, i) => (
+                    <linearGradient key={f.id} id={`temp-${f.id}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={chartColors[i]} stopOpacity={0.2} />
+                      <stop offset="100%" stopColor={chartColors[i]} stopOpacity={0} />
+                    </linearGradient>
+                  ))}
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-surface-500)" strokeOpacity={0.2} />
+                <YAxis
+                  tick={{ fill: "var(--color-text-muted)", fontSize: 11 }}
+                  axisLine={false}
+                  tickLine={false}
+                  width={35}
+                  domain={["auto", "auto"]}
                 />
-              ))}
-            </AreaChart>
-          </ResponsiveContainer>
-          <div className="flex items-center gap-4 mt-3 justify-center">
+                <XAxis hide />
+                <Tooltip
+                  contentStyle={{
+                    background: "var(--color-surface-800)",
+                    border: "1px solid var(--color-surface-500)",
+                    borderRadius: "10px",
+                    fontSize: "12px",
+                    color: "var(--color-text-primary)",
+                  }}
+                  formatter={(value: number | string | undefined) => (value !== undefined ? [`${value}°C`, "Température"] : ["", ""])}
+                />
+                <ReferenceLine y={0} stroke="var(--color-surface-500)" strokeDasharray="3 3" opacity={0.5} />
+                {floors.map((f, i) => (
+                  <Area
+                    key={f.id}
+                    type="monotone"
+                    dataKey={f.name}
+                    stroke={chartColors[i]}
+                    strokeWidth={2}
+                    fill={`url(#temp-${f.id})`}
+                    dot={false}
+                    activeDot={{ r: 3, strokeWidth: 0 }}
+                    isAnimationActive={true}
+                    animationDuration={1500}
+                  />
+                ))}
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4 justify-center">
             {floors.map((f, i) => (
-              <div key={f.id} className="flex items-center gap-1.5 text-xs text-[var(--color-text-muted)]">
+              <div key={f.id} className="flex items-center gap-1.5 text-[10px] md:text-xs text-[var(--color-text-muted)]">
                 <span className="h-2 w-2 rounded-full" style={{ backgroundColor: chartColors[i] }} />
                 {f.name}
               </div>
@@ -224,31 +226,33 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="lg:col-span-5 grid grid-rows-2 gap-4">
-          <div className="rounded-2xl p-5 bg-gradient-to-br from-[var(--color-surface-700)] to-[var(--color-surface-800)] border border-[var(--color-surface-500)]/20 animate-fade-in-up" style={{ animationDelay: "700ms" }}>
-            <h3 className="text-sm font-medium text-[var(--color-text-secondary)] mb-2">État des capteurs</h3>
-            <div className="flex items-center gap-4">
-              <ResponsiveContainer width={110} height={110}>
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={32}
-                    outerRadius={50}
-                    paddingAngle={4}
-                    dataKey="value"
-                    strokeWidth={0}
-                  >
-                    {pieData.map((d) => (
-                      <Cell key={d.name} fill={d.color} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="space-y-2 flex-1">
+        <div className="lg:col-span-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
+          <div className="rounded-2xl p-4 md:p-5 bg-gradient-to-br from-[var(--color-surface-700)] to-[var(--color-surface-800)] border border-[var(--color-surface-500)]/20 animate-fade-in-up" style={{ animationDelay: "700ms" }}>
+            <h3 className="text-sm font-medium text-[var(--color-text-secondary)] mb-4">État des capteurs</h3>
+            <div className="flex items-center gap-6">
+              <div className="shrink-0 h-[100px] w-[100px] md:h-[110px] md:w-[110px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={30}
+                      outerRadius={45}
+                      paddingAngle={4}
+                      dataKey="value"
+                      strokeWidth={0}
+                    >
+                      {pieData.map((d) => (
+                        <Cell key={d.name} fill={d.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="space-y-2.5 flex-1">
                 {pieData.map((d) => (
-                  <div key={d.name} className="flex items-center justify-between text-sm">
+                  <div key={d.name} className="flex items-center justify-between text-[11px] md:text-sm">
                     <div className="flex items-center gap-2">
                       <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: d.color }} />
                       <span className="text-[var(--color-text-muted)]">{d.name}</span>
@@ -260,27 +264,29 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="rounded-2xl p-5 bg-gradient-to-br from-[var(--color-surface-700)] to-[var(--color-surface-800)] border border-[var(--color-surface-500)]/20 animate-fade-in-up" style={{ animationDelay: "800ms" }}>
-            <div className="flex items-center gap-2 mb-2">
+          <div className="rounded-2xl p-4 md:p-5 bg-gradient-to-br from-[var(--color-surface-700)] to-[var(--color-surface-800)] border border-[var(--color-surface-500)]/20 animate-fade-in-up" style={{ animationDelay: "800ms" }}>
+            <div className="flex items-center gap-2 mb-4">
               <Activity className="h-4 w-4 text-[var(--color-text-muted)]" />
               <h3 className="text-sm font-medium text-[var(--color-text-secondary)]">Par étage</h3>
             </div>
-            <ResponsiveContainer width="100%" height={85}>
-              <BarChart data={floorBarData} layout="vertical" barSize={10}>
-                <XAxis type="number" hide />
-                <YAxis
-                  type="category"
-                  dataKey="name"
-                  tick={{ fill: "var(--color-text-muted)", fontSize: 11 }}
-                  axisLine={false}
-                  tickLine={false}
-                  width={80}
-                />
-                <Bar dataKey="ok" stackId="a" fill="#34d399" radius={[0, 0, 0, 0]} />
-                <Bar dataKey="warning" stackId="a" fill="#fbbf24" />
-                <Bar dataKey="critical" stackId="a" fill="#f87171" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            <div className="h-[90px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={floorBarData} layout="vertical" barSize={8}>
+                  <XAxis type="number" hide />
+                  <YAxis
+                    type="category"
+                    dataKey="name"
+                    tick={{ fill: "var(--color-text-muted)", fontSize: 10 }}
+                    axisLine={false}
+                    tickLine={false}
+                    width={70}
+                  />
+                  <Bar dataKey="ok" stackId="a" fill="#34d399" radius={[0, 0, 0, 0]} />
+                  <Bar dataKey="warning" stackId="a" fill="#fbbf24" />
+                  <Bar dataKey="critical" stackId="a" fill="#f87171" radius={[0, 4, 4, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       </div>

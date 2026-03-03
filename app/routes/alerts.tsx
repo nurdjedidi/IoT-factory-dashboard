@@ -26,13 +26,13 @@ export default function Alerts() {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
-      <div className="flex items-center gap-3">
-        <div className="h-10 w-10 rounded-xl bg-red-500/10 flex items-center justify-center">
-          <Bell className="h-5 w-5 text-red-400" />
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="h-12 w-12 rounded-2xl bg-red-500/10 flex items-center justify-center shrink-0">
+          <Bell className="h-6 w-6 text-red-400" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Alertes</h1>
-          <p className="text-sm text-[var(--color-text-muted)]">
+          <h1 className="text-xl md:text-2xl font-bold tracking-tight">Alertes</h1>
+          <p className="text-xs md:text-sm text-[var(--color-text-muted)] mt-0.5">
             {critCount} critique{critCount !== 1 ? "s" : ""} · {warnCount} avertissement{warnCount !== 1 ? "s" : ""}
           </p>
         </div>
@@ -97,30 +97,40 @@ export default function Alerts() {
         {filtered.map((alert, i) => (
           <div
             key={alert.id}
-            className={`animate-fade-in-up flex items-center gap-4 p-4 rounded-2xl
+            className={`animate-fade-in-up flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-2xl
               border transition-all duration-200
               ${alert.acknowledged
                 ? "bg-[var(--color-surface-800)]/40 border-[var(--color-surface-500)]/10 opacity-50"
-                : "bg-gradient-to-r from-[var(--color-surface-700)] to-[var(--color-surface-800)] border-[var(--color-surface-500)]/20"
+                : "bg-gradient-to-br from-[var(--color-surface-700)] to-[var(--color-surface-800)] border-[var(--color-surface-500)]/20 shadow-lg shadow-black/20"
               }`}
             style={{ animationDelay: `${i * 30}ms` }}
           >
-            <AlertBadge severity={alert.severity} />
+            <div className="flex items-center gap-3">
+              <AlertBadge severity={alert.severity} />
+              <div className="flex-1 min-w-0 sm:hidden lowercase first-letter:uppercase text-[10px] font-bold tracking-widest text-[var(--color-text-muted)]">
+                {formatTime(alert.timestamp)}
+              </div>
+            </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{alert.message}</p>
-              <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
-                {alert.floorName} · {alert.sensorName} · {formatTime(alert.timestamp)}
+              <p className="text-sm font-semibold text-[var(--color-text-primary)] leading-snug">{alert.message}</p>
+              <p className="text-xs text-[var(--color-text-muted)] mt-1.5 flex items-center gap-1.5">
+                <span className="font-medium">{alert.floorName}</span>
+                <span className="h-1 w-1 rounded-full bg-[var(--color-surface-500)]" />
+                <span className="truncate">{alert.sensorName}</span>
+                <span className="hidden sm:inline-flex items-center gap-1.5 pl-1.5 border-l border-[var(--color-surface-500)]/30 lowercase">
+                  {formatTime(alert.timestamp)}
+                </span>
               </p>
             </div>
             {!alert.acknowledged && (
               <button
                 onClick={() => acknowledgeAlert(alert.id)}
-                className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
+                className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold
                   bg-[var(--color-surface-600)] border border-[var(--color-surface-500)]/30
                   hover:bg-emerald-500/15 hover:border-emerald-500/30 hover:text-emerald-400
-                  transition-all text-[var(--color-text-secondary)]"
+                  transition-all text-[var(--color-text-secondary)] shadow-sm"
               >
-                <Check className="h-3 w-3" />
+                <Check className="h-3.5 w-3.5" />
                 Acquitter
               </button>
             )}
