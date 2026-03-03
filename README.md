@@ -46,8 +46,8 @@ Un dashboard moderne et performant conçu pour le monitoring industriel, offrant
 
 ## Architecture du Projet
 
-- `app/components/ui` : Composants atomiques réutilisables (KpiCard, AlertBadge, etc.).
-- `app/components/floor-plans` : SVG interactifs et layouts pour les zones de l'usine.
+- `app/components/ui` : Composants réutilisables (KpiCard, AlertBadge, etc.).
+- `app/components/floor-plans` : Layouts pour les zones de l'usine.
 - `app/hooks` : Logique métier et moteur de simulation.
 - `app/context` : État global synchronisé entre les pages.
 - `app/data` : Configuration initiale et types TypeScript.
