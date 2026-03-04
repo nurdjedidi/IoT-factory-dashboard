@@ -4,8 +4,10 @@ import {
   Droplets,
   Factory,
   Gauge,
+  Milk,
   Snowflake,
   Thermometer,
+  Waves,
   Zap,
 } from "lucide-react";
 import { useState } from "react";
@@ -20,9 +22,9 @@ import { useSimulationContext } from "~/context/simulation-context";
 import type { Sensor, SensorType } from "~/data/mock-data";
 import { sensorTypeConfig } from "~/data/mock-data";
 
-const floorIcons = { cog: Cog, snowflake: Snowflake, factory: Factory } as const;
+const floorIcons = { cog: Cog, snowflake: Snowflake, factory: Factory, milk: Milk } as const;
 const sensorIcons: Record<SensorType, typeof Thermometer> = {
-  temperature: Thermometer, humidity: Droplets, pressure: Gauge, vibration: Activity, rpm: Zap,
+  temperature: Thermometer, humidity: Droplets, pressure: Gauge, vibration: Activity, rpm: Zap, flow: Waves,
 };
 
 export const meta = () => {
@@ -48,8 +50,8 @@ export default function FloorDetail() {
 
   const FloorIcon = floorIcons[floor.iconName];
   const FloorPlanComponent =
-    floorId === "assembly" ? FloorPlanAssembly
-    : floorId === "cold-storage" ? FloorPlanColdStorage
+    (floorId === "assembly" || floorId === "production") ? FloorPlanAssembly
+    : (floorId === "cold-storage" || floorId === "cold-chain") ? FloorPlanColdStorage
     : FloorPlanMachines;
 
   const handleSensorClick = (sensor: Sensor) => {

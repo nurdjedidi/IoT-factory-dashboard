@@ -11,7 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { NavLink, Outlet } from "react-router";
+import { NavLink, Outlet, useNavigate } from "react-router";
 import { useSimulationContext } from "~/context/simulation-context";
 
 interface LayoutProps {
@@ -118,6 +118,13 @@ function SidebarContent({
   onItemClick?: () => void;
 }) {
   const { isDairyMode, toggleMode, floors } = useSimulationContext();
+  const navigate = useNavigate();
+
+  const handleToggleMode = () => {
+    toggleMode();
+    navigate("/");
+    if (onItemClick) onItemClick();
+  };
 
   const floorItems = floors.map(f => ({
     to: `/floor/${f.id}`,
@@ -127,8 +134,8 @@ function SidebarContent({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="hidden lg:block p-6 border-b border-[var(--color-surface-500)]/20">
-        <div className="flex items-center justify-between gap-3">
+      <div className="lg:block p-6 border-b border-[var(--color-surface-500)]/20">
+        <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500
               flex items-center justify-center shadow-lg shadow-cyan-500/20">
@@ -143,16 +150,31 @@ function SidebarContent({
           </div>
           
           <button
-            onClick={toggleMode}
-            className="h-8 w-8 rounded-lg bg-[var(--color-surface-700)] border border-[var(--color-surface-500)]/20
-              flex items-center justify-center hover:bg-[var(--color-surface-600)] transition-colors group"
-            title={isDairyMode ? "Passer en mode industriel" : "Passer en mode laiterie"}
+            onClick={handleToggleMode}
+            className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-2xl border transition-all duration-300 group
+              ${isDairyMode 
+                ? "bg-emerald-500/10 border-emerald-500/20 hover:bg-emerald-500/20" 
+                : "bg-cyan-500/10 border-cyan-500/20 hover:bg-cyan-500/20"
+              }`}
           >
-            {isDairyMode ? (
-              <Factory className="h-4 w-4 text-[var(--color-text-muted)] group-hover:text-emerald-400 transition-colors" />
-            ) : (
-              <Milk className="h-4 w-4 text-[var(--color-text-muted)] group-hover:text-cyan-400 transition-colors" />
-            )}
+            <div className="flex items-center gap-2.5">
+              <div className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors
+                ${isDairyMode ? "bg-emerald-500/20 text-emerald-400" : "bg-cyan-500/20 text-cyan-400"}`}>
+                {isDairyMode ? <Milk className="h-4.5 w-4.5" /> : <Factory className="h-4.5 w-4.5" />}
+              </div>
+              <div className="text-left">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] group-hover:text-[var(--color-text-primary)] transition-colors">
+                  Mode Actuel
+                </p>
+                <p className="text-xs font-semibold text-[var(--color-text-primary)]">
+                  {isDairyMode ? "Laiterie" : "Industriel"}
+                </p>
+              </div>
+            </div>
+            <div className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase
+              ${isDairyMode ? "bg-emerald-500/20 text-emerald-400" : "bg-cyan-500/20 text-cyan-400"}`}>
+              Changer
+            </div>
           </button>
         </div>
       </div>
