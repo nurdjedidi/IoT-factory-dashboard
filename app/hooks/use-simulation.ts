@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Alert, Floor, Sensor, SensorStatus } from "~/data/mock-data";
-import { generateInitialAlerts, floors as initialFloors } from "~/data/mock-data";
+import {
+  dairyFloors,
+  generateInitialAlerts,
+  floors as industrialFloors
+} from "~/data/mock-data";
 
 function clamp(v: number, min: number, max: number) {
   return Math.min(max, Math.max(min, v));
@@ -14,10 +18,25 @@ function getStatus(value: number, sensor: Sensor): SensorStatus {
 
 export function useSimulation(intervalMs = 2500) {
   const alertIdRef = useRef(100);
+
+  const [isDairyMode, setIsDairyMode] = useState(false);
+
   const [floors, setFloors] = useState<Floor[]>(() =>
-    JSON.parse(JSON.stringify(initialFloors))
+    JSON.parse(JSON.stringify(isDairyMode ? dairyFloors : industrialFloors))
   );
-  const [alerts, setAlerts] = useState<Alert[]>(() => generateInitialAlerts());
+  const [alerts, setAlerts] = useState<Alert[]>(() =>
+    generateInitialAlerts(isDairyMode ? dairyFloors : industrialFloors)
+  );
+
+  const toggleMode = useCallback(() => {
+    setIsDairyMode(prev => {
+      const newMode = !prev;
+      const newData = newMode ? dairyFloors : industrialFloors;
+      setFloors(JSON.parse(JSON.stringify(newData)));
+      setAlerts(generateInitialAlerts(newData));
+      return newMode;
+    });
+  }, []);
 
   const tick = useCallback(() => {
     setFloors((prev) =>
@@ -47,6 +66,7 @@ export function useSimulation(intervalMs = 2500) {
                 threshold: newValue >= sensor.thresholdHigh ? sensor.thresholdHigh : sensor.thresholdLow,
                 timestamp: new Date(),
                 acknowledged: false,
+                businessContext: sensor.businessContext,
               },
               ...a,
             ].slice(0, 50));
@@ -80,5 +100,7 @@ export function useSimulation(intervalMs = 2500) {
     activeCritical,
     activeWarning,
     acknowledgeAlert,
+    isDairyMode,
+    toggleMode,
   };
 }

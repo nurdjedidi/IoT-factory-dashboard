@@ -5,12 +5,14 @@ import {
   Factory,
   LayoutDashboard,
   Menu,
+  Milk,
   Radio,
   Snowflake,
   X,
 } from "lucide-react";
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router";
+import { useSimulationContext } from "~/context/simulation-context";
 
 interface LayoutProps {
   alertCount?: number;
@@ -115,18 +117,43 @@ function SidebarContent({
   alertCount: number;
   onItemClick?: () => void;
 }) {
+  const { isDairyMode, toggleMode, floors } = useSimulationContext();
+
+  const floorItems = floors.map(f => ({
+    to: `/floor/${f.id}`,
+    label: f.name,
+    icon: f.iconName === "cog" ? Cog : f.iconName === "snowflake" ? Snowflake : f.iconName === "factory" ? Factory : Milk
+  }));
+
   return (
     <div className="flex flex-col h-full">
       <div className="hidden lg:block p-6 border-b border-[var(--color-surface-500)]/20">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500
-            flex items-center justify-center shadow-lg shadow-cyan-500/20">
-            <Radio className="h-5 w-5 text-white" />
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500
+              flex items-center justify-center shadow-lg shadow-cyan-500/20">
+              <Radio className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-sm font-bold tracking-wide">IoT Dashboard</h1>
+              <p className="text-[10px] text-[var(--color-text-muted)] uppercase tracking-tighter">
+                {isDairyMode ? "Industrie Laitière" : "Usine Intelligente"}
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-sm font-bold tracking-wide">IoT Dashboard</h1>
-            <p className="text-[10px] text-[var(--color-text-muted)] uppercase tracking-tighter">Usine Intelligente</p>
-          </div>
+          
+          <button
+            onClick={toggleMode}
+            className="h-8 w-8 rounded-lg bg-[var(--color-surface-700)] border border-[var(--color-surface-500)]/20
+              flex items-center justify-center hover:bg-[var(--color-surface-600)] transition-colors group"
+            title={isDairyMode ? "Passer en mode industriel" : "Passer en mode laiterie"}
+          >
+            {isDairyMode ? (
+              <Factory className="h-4 w-4 text-[var(--color-text-muted)] group-hover:text-emerald-400 transition-colors" />
+            ) : (
+              <Milk className="h-4 w-4 text-[var(--color-text-muted)] group-hover:text-cyan-400 transition-colors" />
+            )}
+          </button>
         </div>
       </div>
 

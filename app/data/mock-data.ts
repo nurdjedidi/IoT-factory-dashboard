@@ -1,4 +1,4 @@
-export type SensorType = "temperature" | "humidity" | "pressure" | "vibration" | "rpm";
+export type SensorType = "temperature" | "humidity" | "pressure" | "vibration" | "rpm" | "flow";
 export type SensorStatus = "ok" | "warning" | "critical";
 export type AlertSeverity = "info" | "warning" | "critical";
 
@@ -17,13 +17,18 @@ export interface Sensor {
   x: number;
   y: number;
   history: number[];
+  businessContext?: {
+    risk: string;
+    financialImpact: string;
+    action: string;
+  };
 }
 
 export interface Floor {
   id: string;
   name: string;
   description: string;
-  iconName: "cog" | "snowflake" | "factory";
+  iconName: "cog" | "snowflake" | "factory" | "milk";
   color: string;
   colorDim: string;
   sensors: Sensor[];
@@ -41,6 +46,11 @@ export interface Alert {
   threshold: number;
   timestamp: Date;
   acknowledged: boolean;
+  businessContext?: {
+    risk: string;
+    financialImpact: string;
+    action: string;
+  };
 }
 
 function makeSensor(
@@ -55,6 +65,11 @@ function makeSensor(
   floorId: string,
   x: number,
   y: number,
+  businessContext?: {
+    risk: string;
+    financialImpact: string;
+    action: string;
+  }
 ): Sensor {
   const value = +(min + Math.random() * (max - min)).toFixed(1);
   return {
@@ -72,6 +87,7 @@ function makeSensor(
     x,
     y,
     history: Array.from({ length: 20 }, () => +(min + Math.random() * (max - min)).toFixed(1)),
+    businessContext,
   };
 }
 
@@ -125,10 +141,195 @@ export const floors: Floor[] = [
   },
 ];
 
-export function generateInitialAlerts(): Alert[] {
+export const dairyFloors: Floor[] = [
+  {
+    id: "cold-chain",
+    name: "Chaîne du Froid",
+    description: "Chambres froides lait cru, produits laitiers finis et semi-finis",
+    iconName: "snowflake",
+    color: "var(--color-accent-cyan)",
+    colorDim: "var(--color-accent-cyan-dim)",
+    sensors: [
+      makeSensor(
+        "cf-temp-lait-cru",
+        "Temp. Lait Cru",
+        "temperature",
+        "°C",
+        -2,
+        8,
+        2,
+        4,
+        "cold-chain",
+        15,
+        25,
+        {
+          risk: "Développement bactérien accéléré",
+          financialImpact: "15 000L × 0,40€/L = 6 000€ de perte",
+          action: "Vérifier compresseur #1 + Appeler maintenance"
+        }
+      ),
+      makeSensor(
+        "cf-temp-yaourt",
+        "Temp. Yaourts",
+        "temperature",
+        "°C",
+        0,
+        10,
+        4,
+        6,
+        "cold-chain",
+        50,
+        25,
+        {
+          risk: "Rupture chaîne du froid - Non-conformité HACCP",
+          financialImpact: "50 000 unités × 0,15€ = 7 500€",
+          action: "Isoler le lot + Contrôle qualité immédiat"
+        }
+      ),
+      makeSensor(
+        "cf-temp-fromage",
+        "Temp. Fromages",
+        "temperature",
+        "°C",
+        0,
+        12,
+        6,
+        8,
+        "cold-chain",
+        80,
+        30,
+        {
+          risk: "Affinage compromis - Perte qualité",
+          financialImpact: "2 tonnes × 8€/kg = 16 000€",
+          action: "Vérifier réfrigération zone affinage"
+        }
+      ),
+      makeSensor("cf-hum-1", "Humidité Ch. Lait", "humidity", "%HR", 30, 90, 40, 75, "cold-chain", 15, 55),
+      makeSensor("cf-hum-2", "Humidité Ch. Yaourt", "humidity", "%HR", 30, 90, 40, 75, "cold-chain", 50, 55),
+      makeSensor("cf-temp-corridor", "Temp. Corridor", "temperature", "°C", 5, 20, 8, 15, "cold-chain", 45, 80),
+    ],
+  },
+  {
+    id: "production",
+    name: "Production Laitière",
+    description: "Pasteurisation, homogénéisation, fermentation",
+    iconName: "factory",
+    color: "var(--color-accent-emerald)",
+    colorDim: "var(--color-accent-emerald-dim)",
+    sensors: [
+      makeSensor(
+        "past-temp",
+        "Temp. Pasteurisation",
+        "temperature",
+        "°C",
+        60,
+        85,
+        71,
+        73,
+        "production",
+        20,
+        25,
+        {
+          risk: "Pasteurisation inefficace - Risque sanitaire",
+          financialImpact: "30 000L × 0,45€/L = 13 500€ + Rappel produit",
+          action: "ARRÊT LIGNE + Vérifier échangeur thermique"
+        }
+      ),
+      makeSensor(
+        "homo-pres",
+        "Pression Homogénéisateur",
+        "pressure",
+        "bar",
+        150,
+        250,
+        180,
+        220,
+        "production",
+        55,
+        25,
+        {
+          risk: "Homogénéisation inadéquate",
+          financialImpact: "20 000L non-conforme = 9 000€",
+          action: "Régler pression pompe"
+        }
+      ),
+      makeSensor(
+        "ferm-temp",
+        "Temp. Fermentation",
+        "temperature",
+        "°C",
+        38,
+        48,
+        42,
+        44,
+        "production",
+        25,
+        55,
+        {
+          risk: "Fermentation ralentie - Délai production",
+          financialImpact: "Retard 4h = 40 000 unités = 6 000€",
+          action: "Vérifier ensemencement + Ajuster température"
+        }
+      ),
+      makeSensor(
+        "bottling-flow",
+        "Débit Embouteillage",
+        "flow",
+        "L/min",
+        0,
+        500,
+        100,
+        450,
+        "production",
+        70,
+        50,
+        {
+          risk: "Ralentissement ligne",
+          financialImpact: "30% capacité perdue = 3 000€/h",
+          action: "Vérifier buses + Nettoyer filtres"
+        }
+      ),
+      makeSensor("prod-vib-1", "Vibration Remplisseuse", "vibration", "mm/s", 0, 15, 0, 10, "production", 70, 78),
+      makeSensor("prod-temp-amb", "Temp. Atelier", "temperature", "°C", 15, 30, 16, 25, "production", 45, 85),
+    ],
+  },
+  {
+    id: "quality-lab",
+    name: "Laboratoire Qualité",
+    description: "Contrôle qualité microbiologique",
+    iconName: "cog",
+    color: "var(--color-accent-amber)",
+    colorDim: "var(--color-accent-amber-dim)",
+    sensors: [
+      makeSensor(
+        "lab-temp-incub",
+        "Temp. Incubateur",
+        "temperature",
+        "°C",
+        32,
+        42,
+        35,
+        37,
+        "quality-lab",
+        20,
+        30,
+        {
+          risk: "Résultats analyses faussés",
+          financialImpact: "3 lots bloqués = 45 000€",
+          action: "Recalibrer incubateur"
+        }
+      ),
+      makeSensor("lab-temp-frigo", "Temp. Frigo Échantillons", "temperature", "°C", 0, 10, 2, 6, "quality-lab", 60, 30),
+      makeSensor("lab-hum", "Humidité Labo", "humidity", "%HR", 30, 80, 35, 65, "quality-lab", 40, 60),
+      makeSensor("lab-temp-amb", "Temp. Labo", "temperature", "°C", 18, 28, 20, 24, "quality-lab", 45, 85),
+    ],
+  },
+];
+
+export function generateInitialAlerts(floorsData: Floor[]): Alert[] {
   const alerts: Alert[] = [];
   let id = 1;
-  for (const floor of floors) {
+  for (const floor of floorsData) {
     for (const sensor of floor.sensors) {
       if (sensor.status === "critical") {
         alerts.push({
@@ -143,6 +344,7 @@ export function generateInitialAlerts(): Alert[] {
           threshold: sensor.thresholdHigh,
           timestamp: new Date(Date.now() - Math.random() * 3600000),
           acknowledged: false,
+          businessContext: sensor.businessContext,
         });
       } else if (sensor.status === "warning") {
         alerts.push({
@@ -157,6 +359,7 @@ export function generateInitialAlerts(): Alert[] {
           threshold: sensor.thresholdHigh,
           timestamp: new Date(Date.now() - Math.random() * 7200000),
           acknowledged: false,
+          businessContext: sensor.businessContext,
         });
       }
     }
@@ -170,4 +373,5 @@ export const sensorTypeConfig: Record<SensorType, { label: string; iconName: str
   pressure: { label: "Pression", iconName: "gauge" },
   vibration: { label: "Vibration", iconName: "activity" },
   rpm: { label: "Vitesse", iconName: "zap" },
+  flow: { label: "Débit", iconName: "waves" },
 };
