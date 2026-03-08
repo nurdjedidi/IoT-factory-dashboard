@@ -29,7 +29,8 @@ import { StatusIndicator } from "~/components/ui/status-indicator";
 import { useSimulationContext } from "~/context/simulation-context";
 import type { Route } from "./+types/home";
 
-const floorIcons = { cog: Cog, snowflake: Snowflake, factory: Factory } as const;
+import { Droplet } from "lucide-react";
+const floorIcons = { cog: Cog, snowflake: Snowflake, factory: Factory, milk: Droplet } as const;
 
 export function meta({}: Route.MetaArgs) {
   return [

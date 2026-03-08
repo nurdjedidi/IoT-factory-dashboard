@@ -86,7 +86,14 @@ function makeSensor(
     floorId,
     x,
     y,
-    history: Array.from({ length: 20 }, () => +(min + Math.random() * (max - min)).toFixed(1)),
+    history: Array.from({ length: 20 }, (_, i) => {
+      const timeOffset = Date.now() - (19 - i) * 2500;
+      const time = timeOffset / 15000;
+      const hash = id.split("").reduce((a, b) => a + b.charCodeAt(0), 0);
+      const wave = Math.sin(time + hash) * (max - min) * 0.035;
+      const noise = (Math.random() - 0.5) * (max - min) * 0.035;
+      return +(value + wave + noise).toFixed(1);
+    }),
     businessContext,
   };
 }

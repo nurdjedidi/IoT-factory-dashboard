@@ -1,4 +1,4 @@
-import { Activity, Droplets, Gauge, Thermometer, X, Zap } from "lucide-react";
+import { Activity, Droplets, Gauge, Thermometer, Waves, X, Zap } from "lucide-react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, YAxis } from "recharts";
 import type { Sensor, SensorType } from "~/data/mock-data";
 import { sensorTypeConfig } from "~/data/mock-data";
@@ -10,6 +10,7 @@ const iconMap: Record<SensorType, typeof Thermometer> = {
   pressure: Gauge,
   vibration: Activity,
   rpm: Zap,
+  flow: Waves,
 };
 
 interface SensorDetailPanelProps {
